@@ -211,4 +211,5 @@ __marimo__/
 
 data/*
 */DynamicWord2Vec
-results/
+results/*
+!.gitkeep
