@@ -1,0 +1,3 @@
+1. Download all the files from the dropbox folder of the original repo
+2. Place them into the `data/` folder
+3. ...
