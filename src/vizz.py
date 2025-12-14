@@ -85,7 +85,16 @@ def plot_norm_trajectory(U_list, words, word2id, time_points, save_path=None):
     else:
         plt.show()
 
-def plot_tsne_trajectory(U_list, word, word2id, wordlist, time_points, top_k=50, save_path=None):
+def plot_tsne_trajectory(
+    U_list,
+    word,
+    word2id,
+    wordlist,
+    time_points,
+    top_k=50,
+    label_top_n=8,
+    save_path=None,
+):
     """
     Plots the t-SNE trajectory of a word and its nearest neighbors.
     """
@@ -98,6 +107,7 @@ def plot_tsne_trajectory(U_list, word, word2id, wordlist, time_points, top_k=50,
     X = []
     labels = []
     is_target = []
+    should_label = []
     
     for t_idx, year in enumerate(time_points):
         emb = U_list[t_idx]
@@ -117,7 +127,9 @@ def plot_tsne_trajectory(U_list, word, word2id, wordlist, time_points, top_k=50,
             neighbor_idx = idx[k]
             neighbor_word = wordlist[neighbor_idx]
             labels.append(f"{neighbor_word} ({year})")
-            is_target.append(neighbor_idx == wid)
+            is_t = neighbor_idx == wid
+            is_target.append(is_t)
+            should_label.append(bool(is_t or (k < int(label_top_n))))
             X.append(emb[neighbor_idx, :])
             
     X = np.vstack(X)
@@ -135,9 +147,14 @@ def plot_tsne_trajectory(U_list, word, word2id, wordlist, time_points, top_k=50,
     for i in range(len(labels)):
         if is_target[i]:
             plt.plot(Z[i, 0], Z[i, 1], 'ro', markersize=8)
-            plt.text(Z[i, 0], Z[i, 1], labels[i], fontsize=10, fontweight='bold')
         else:
             plt.plot(Z[i, 0], Z[i, 1], 'b.', alpha=0.3)
+
+        if should_label[i]:
+            if is_target[i]:
+                plt.text(Z[i, 0], Z[i, 1], labels[i], fontsize=10, fontweight='bold')
+            else:
+                plt.text(Z[i, 0], Z[i, 1], labels[i], fontsize=8, alpha=0.8)
             
     plt.title(f"Trajectory of '{word}'")
     
