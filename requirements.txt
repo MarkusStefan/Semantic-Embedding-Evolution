@@ -1,0 +1,16 @@
+numpy>=1.26.4
+pandas>=2.3.2
+scipy>=1.16.2
+scikit-learn>=1.7.2
+
+# Deep Learning (PyTorch)
+torch>=2.8.0
+torchvision>=0.23.0
+torchaudio>=2.8.0
+
+# Visualization
+matplotlib>=3.10.6
+seaborn>=0.13.2
+
+# System Utilities
+psutil>=6.1.1
