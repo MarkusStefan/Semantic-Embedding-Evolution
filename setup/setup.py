@@ -56,6 +56,7 @@ def load_data():
     Iterates through all DROPBOX_RESOURCES, downloads them, extracts them to the
     correct directory (../data), and removes the temporary zip file.
     """
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     if _data_loaded():
         print("Data seems to be loaded already. Skipping download.")
         return
