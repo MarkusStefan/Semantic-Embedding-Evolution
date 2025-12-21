@@ -208,6 +208,3 @@ __marimo__/
 
 # Downloaded data resources
 data/*
-
-# Training output
-results/*
