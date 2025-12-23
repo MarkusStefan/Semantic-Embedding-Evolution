@@ -208,3 +208,6 @@ __marimo__/
 
 # Downloaded data resources
 data/*
+notebooks/lol.ipynb
+results/*
+setup/DynamicWord2Vec
