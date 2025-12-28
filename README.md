@@ -19,4 +19,4 @@ Tracking how contextualized word representations evolve over time (e.g., `Apple`
 	- Comparing with a model trained on the full corpus at once.
 	- Estimating how much fine-tuning is required to introduce noticeable shifts.
 5. (Optional) Explore adversarial attacks that attempt to fool models by confusing semantic meanings.
-6. (Optional) Detect change points: when does a token’s dominant meaning flip?
+6. (Optional) Detect **change points**: when does a token’s dominant meaning flip?
