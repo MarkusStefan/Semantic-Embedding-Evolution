@@ -211,3 +211,6 @@ data/*
 notebooks/lol.ipynb
 results/*
 setup/DynamicWord2Vec
+
+# models
+gpt2/*
