@@ -214,3 +214,6 @@ setup/DynamicWord2Vec
 
 # models
 gpt2/*
+analysis/*
+artifacts/*
+cache/*
