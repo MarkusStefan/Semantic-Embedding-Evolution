@@ -10,13 +10,26 @@ Tracking how contextualized word representations evolve over time (e.g., `Apple`
 - Implement time-sliced word2vec or similar static embedding model to measure semantic drift across corpora.
 
 ### Goal 2 — Extensions
-1. Replace word2vec with a Transformer model to compare contextual clusters vs. static embeddings.
-2. Apply dimensionality reduction (e.g., PCA, t-SNE, UMAP) and visualize the temporal trajectory of embeddings.
-3. Fine-tune the Transformer on a subset of data to see if meanings can be deliberately shifted (e.g., push `amazon` toward jungle semantics).
-4. Measure whether fine-tuning changes token semantics by:
-	- Pre-training on data before `YYYY`.
-	- Fine-tuning on data after `YYYY`.
-	- Comparing with a model trained on the full corpus at once.
-	- Estimating how much fine-tuning is required to introduce noticeable shifts.
-5. (Optional) Explore adversarial attacks that attempt to fool models by confusing semantic meanings.
-6. (Optional) Detect **change points**: when does a token’s dominant meaning flip?
+Running both extensions does not require any external downloads, everything is self-contained. Run on JupyterHub with sufficient RAM and GPU support!
+
+#### Extension 1: Embedding Evolution during Small-Scale GPT2 Fine-tuning
+
+See `notebooks/exp1.ipynb`:
+
+- **Objective:** Measure how a small GPT-2 model's embeddings evolve when a word acquires a new meaning via fine-tuning (example: "python" as reptile vs programming language).
+- **Methodology:** initializes a compact GPT-2, builds synthetic + real sentence datasets, fine-tunes across a hyperparameter grid, and saves checkpoints during training.
+- **Measurements:** extracts static token embeddings (WTE), contextual token embeddings (token-specific last-layer vectors), and sentence embeddings (mean pooling) before, during, and after fine-tuning.
+- **Assessments & visualizations:** clustering, PCA/t-SNE projections, trajectory plots, embedding-drift curves, and multiple diagnostics (perplexity, next-token probabilities).
+- **New evaluations:** (1) Sampled Generation Assessment — generates many sampled completions per prompt to estimate probability shifts for target senses; (2) Polysemy Disambiguation Test — measures acquisition vs forgetting using context-sensitive prompts.
+
+
+#### Extension 2: Dynamic Model2Vec - Distillation of fine-tuned Language Models
+
+See `notebooks/exp2.ipynb`:
+
+- **Objective:** Distill fine-tuned language models into static embedding models and evaluate semantic drift between modern and historical (fine-tuned) static models.
+- **Methodology:** preprocesses/pack-slices a large corpus (PG-19), fine-tunes or trains several teacher models (finetuned, scratch-trained, aggressive tuning), then uses model2vec distillation to produce static embedding models.
+- **Alignment & analysis:** obtains common vocab anchors, computes orthogonal Procrustes alignment between embedding spaces, and aligns variant embeddings into a shared space.
+- **Measurements & visualizations:** encodes words and anchors, computes cosine-based drift scores, identifies top drifters, and visualizes semantic trajectories using joint PCA and targeted anchor contexts.
+- **Dashboard & probes:** builds a multi-variant dashboard comparing control vs fine-tuned variants across curated target words (e.g., "cloud", "gay", "post", "bug"), with context-word overlays and per-variant subplots.
+
