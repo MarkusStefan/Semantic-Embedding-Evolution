@@ -319,7 +319,8 @@ def compute_bleu(reference, candidate, max_n=4):
 ```
 
 ### 3. Seq2Seq and Attention
-**Rationale:** The "Bottleneck Problem." A standard Encoder-Decoder must compress the source information into one single vector (last hidden state of encoder)**Attention** allows the decoder to "look back" at every specific source word in the encoder hidden states when generating each target word.
+**Rationale:** The "Bottleneck Problem." A standard Encoder-Decoder must compress the source information into one single vector (last hidden state of encoder)
+**Attention** allows the decoder to "look back" at every specific source word in the encoder hidden states when generating each target word.
 
 - decoder hidden states are simply multiplied with encoder hidden states to get attention scores (similarity) in the form of probabilities by softmaxing over all dot-products.
 - attention distribution is used to compute a weighted sum of encoder hidden states (context vector) that is specific to each target word generation step --> so we still have only one vector $h_t$ from the decoder that initializes the decoder generation process, but then the attention-weighted context vector $a * h_{enc}$ is **concatenated** to the decoder hidden state at each time step to predict the next word.
@@ -465,10 +466,11 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         out = self.layer(x)
-        out = self.norm(out + x) # skip connection
+        # skip connection by passing x directly to output
+        out = self.norm(out + x) # addition (assuming same dim)
         return out
 ```
--- Add & Norm: after each sub-layer (attention, feedforward), add the input to the output of the sub-layer (residual connection) and apply layer normalization.
+- Add & Norm: after each sub-layer (attention, feedforward), add the input to the output of the sub-layer (residual connection) and apply layer normalization.
     - add: this refers to the residual connection, where the input to the sub-layer is added to its output
     - norm: layer normalization is applied to the result of the addition
 
@@ -523,6 +525,16 @@ class MultiHeadAttention(nn.Module):
         
         return self.out_proj(context)
 ```
+- While the input is split into multiple heads, all heads initially receive the same input embeddings. This means each head starts with the full context of the sentence or sequence.
+
+- The splitting happens at the level of attention weights, not the input itself. Each head learns to focus on different parts of the input, but the entire input is always available to every head.
+
+- Each head computes its own attention weights over the entire input sequence. This means that even if one head focuses on local dependencies (e.g., nearby words), another head can capture long-range dependencies or different types of relationships (e.g., syntactic vs. semantic).
+- The heads don’t "lose" context—they just learn to emphasize different parts of it.
+- After each head processes the input, their outputs are concatenated and linearly transformed to produce the final output. This ensures that the model combines the diverse perspectives learned by each head.
+- For example, if one head focuses on subject-verb agreement and another on word semantics, their outputs are merged to form a richer representation
+
+
 
 
 ### LLM Architectures
